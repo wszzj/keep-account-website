@@ -1,5 +1,7 @@
 <template>
-  <div>statistics.vue</div>
+  <layout>
+    <div>statistics.vue</div>
+  </layout>
 </template>
 
 <script>
