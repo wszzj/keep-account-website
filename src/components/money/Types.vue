@@ -7,18 +7,24 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "Types",
-  data() {
-    return { type: "+" };
-  },
-  methods: {
-    changeType(type) {
+<script lang="ts">
+import Vue from "vue";
+import { Component, Prop, Watch } from "vue-property-decorator";
+@Component
+export default class Types extends Vue {
+  type = "-";
+  changeType(type: string) {
+    if (type !== "+" && type !== "-") {
+      throw new Error("type is unknown");
+    } else {
       this.type = type;
-    },
-  },
-};
+    }
+  }
+  @Watch("type")
+  onTypeChang(value: string) {
+    this.$emit("update:value", value);
+  }
+}
 </script>
 
 <style lang="scss" scoped>
