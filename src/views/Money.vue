@@ -3,7 +3,7 @@
     <NumberPad @update:value="onUpdateAmount" @submit="saveRecord" />
     <Types :value.sync="record.type" />
     <Notes @update:value="onUpdateNotes" />
-    <Tags :dataSource.sync="tags" @update:value="onUpdateTag" />
+    <Tags @update:value="onUpdateTag" />
   </Layout>
 </template>
 
@@ -15,14 +15,11 @@ import Notes from "@/components/money/Notes.vue";
 import Types from "@/components/money/Types.vue";
 import NumberPad from "@/components/money/NumberPad.vue";
 import recordListModel from "@/models/recordListModel";
-import tagListModel from "@/models/tagListModel";
 const recordList = recordListModel.fetch();
-const tagList = tagListModel.fetch();
 @Component({
   components: { Tags, Notes, Types, NumberPad },
 })
 export default class Money extends Vue {
-  tags = tagList;
   record: RecordItem = { tag: "", notes: "", type: "-", amount: 0 };
   recordList: RecordItem[] = recordList;
   onUpdateNotes(value: string) {

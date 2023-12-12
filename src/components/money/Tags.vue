@@ -5,12 +5,12 @@
     </div>
     <ul class="current">
       <li
-        v-for="(value, index) in dataSource"
+        v-for="(value, index) in tags"
         :key="index"
-        @click="select(value)"
-        :class="{ selected: selectedTag === value }"
+        @click="select(value.name)"
+        :class="{ selected: selectedTag === value.name }"
       >
-        {{ value }}
+        {{ value.name }}
       </li>
     </ul>
   </div>
@@ -18,10 +18,13 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import tagListModel from "@/models/tagListModel";
+
+import { Component } from "vue-property-decorator";
+tagListModel.fetch();
 @Component
 export default class Tags extends Vue {
-  @Prop(Array) dataSource: string[] | undefined;
+  tags = tagListModel.data;
   selectedTag = "";
   select(tag: string) {
     if (this.selectedTag !== tag) {
@@ -34,18 +37,13 @@ export default class Tags extends Vue {
     this.$emit("update:value", this.selectedTag);
   }
   createTag() {
-    const name = window.prompt("请输入新的标签名：");
+    const name = window.prompt("请输入新的标签名");
     if (name === "") {
       window.alert("标签名不能为空");
       return;
     }
-    if (this.dataSource && name) {
-      if (this.dataSource.indexOf(name) >= 0) {
-        window.alert("标签名重复");
-        return "duplicate";
-      } else {
-        this.$emit("update:dataSource", [...this.dataSource, name]);
-      }
+    if (name) {
+      tagListModel.create(name);
     }
   }
 }

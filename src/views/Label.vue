@@ -2,7 +2,7 @@
   <layout>
     <ol class="tags">
       <li v-for="(item, index) in tags" :key="index">
-        <span>{{ item }}</span>
+        <span>{{ item.name }}</span>
         <Icon name="right" />
       </li>
     </ol>
@@ -26,13 +26,8 @@ export default class Label extends Vue {
       window.alert("标签名不能为空");
       return;
     }
-    if (this.tags && name) {
-      if (this.tags.indexOf(name) >= 0) {
-        window.alert("标签名重复");
-        return "duplicate";
-      } else {
-        tagListModel.create(name);
-      }
+    if (name) {
+      tagListModel.create(name);
     }
   }
 }
