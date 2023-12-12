@@ -1,6 +1,5 @@
 <template>
   <Layout class-prefix="layout">
-    {{ recordList }}
     <NumberPad
       @update:value="onUpdateAmount"
       :value="record.amount"

@@ -6,10 +6,15 @@
       <span class="rightIcon"></span>
     </div>
     <div class="form-wrapper">
-      <FormItem filedName="标签名" placeholder="在这里输入标签名" />
+      <FormItem
+        filedName="标签名"
+        placeholder="在这里输入标签名"
+        :value="tag.name"
+        @update:value="update"
+      />
     </div>
     <div class="button-wrapper">
-      <Button>删除标签</Button>
+      <Button @click="remove">删除标签</Button>
     </div>
   </Layout>
 </template>
@@ -23,17 +28,26 @@ import { Component } from "vue-property-decorator";
   components: { FormItem },
 })
 export default class EditLabel extends Vue {
+  tag: { id: string; name: string } = { id: "", name: "" };
   created() {
     const id = this.$route.params.id;
     tagListModel.fetch();
     const tags = tagListModel.data;
     const tag = tags.filter((t) => t.id === id)[0];
     if (tag) {
-      // console.log(tag);
+      this.tag = tag;
     } else {
       this.$router.replace("/404");
     }
   }
+  update(name: string) {
+    tagListModel.update(this.tag.id, name);
+  }
+  remove() {
+    tagListModel.remove(this.tag.id);
+    this.$router.back();
+  }
+
   back() {
     this.$router.back();
   }
