@@ -21,18 +21,21 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import tagListModel from "@/models/tagListModel";
-tagListModel.fetch();
+
 @Component
 export default class Label extends Vue {
-  tags = tagListModel.data;
+  tags = tagListModel.fetch();
   createTag() {
     const name = window.prompt("请输入新的标签名");
-    if (name === "") {
-      window.alert("标签名不能为空");
-      return;
-    }
     if (name) {
-      tagListModel.create(name);
+      const message = tagListModel.create(name);
+      if (message === "duplicate") {
+        window.alert("标签名重复");
+      } else if (message === "success") {
+        window.alert("创建成功");
+      }
+    } else if (name === "") {
+      window.alert("标签名不能为空");
     }
   }
 }

@@ -28,11 +28,10 @@ import { Component } from "vue-property-decorator";
   components: { FormItem },
 })
 export default class EditLabel extends Vue {
-  tag: { id: string; name: string } = { id: "", name: "" };
+  tag: Tag = { id: "", name: "" };
   created() {
     const id = this.$route.params.id;
-    tagListModel.fetch();
-    const tags = tagListModel.data;
+    const tags = tagListModel.fetch();
     const tag = tags.filter((t) => t.id === id)[0];
     if (tag) {
       this.tag = tag;

@@ -1,10 +1,6 @@
 <template>
   <Layout class-prefix="layout">
-    <NumberPad
-      @update:value="onUpdateAmount"
-      :value="record.amount"
-      @submit="saveRecord"
-    />
+    <NumberPad :value.sync="record.amount" @submit="saveRecord" />
     <Types :value.sync="record.type" />
     <div class="notes">
       <FormItem
@@ -26,30 +22,27 @@ import FormItem from "@/components/money/FormItem.vue";
 import Types from "@/components/money/Types.vue";
 import NumberPad from "@/components/money/NumberPad.vue";
 import recordListModel from "@/models/recordListModel";
-const recordList = recordListModel.fetch();
+
 @Component({
   components: { Tags, FormItem, Types, NumberPad },
 })
 export default class Money extends Vue {
   record: RecordItem = { tag: "", notes: "", type: "-", amount: "0" };
-  recordList: RecordItem[] = recordList;
+  recordList = recordListModel.fetch();
   onUpdateNotes(value: string) {
     this.record.notes = value;
   }
-  onUpdateAmount(value: string) {
-    this.record.amount = value;
-  }
+
   onUpdateTag(value: string) {
     this.record.tag = value;
   }
   saveRecord() {
-    const record2: RecordItem = recordListModel.clone(this.record);
-    record2.createdAt = new Date();
-    this.recordList.push(record2);
+    recordListModel.create(this.record);
+    this.record = { tag: "", notes: "", type: "-", amount: "0" };
   }
   @Watch("recordList")
   onRecordListChanged() {
-    recordListModel.save(this.recordList);
+    recordListModel.save();
   }
 }
 </script>

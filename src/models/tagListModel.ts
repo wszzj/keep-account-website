@@ -14,15 +14,13 @@ const tagListModel = {
   },
   create(name: string) {
     const names = this.data.map((item) => item.name);
-
     if (names.indexOf(name) >= 0) {
-      window.alert("标签名重复");
       return "duplicate";
     }
     const id = createId().toString();
     this.data.push({ id, name });
     this.save();
-    return name;
+    return "success";
   },
   update(id: string, name: string) {
     const idList = this.data.map((item) => item.id);
@@ -33,8 +31,9 @@ const tagListModel = {
         return "duplicate";
       } else {
         const tag = this.data.filter((item) => item.id === id)[0];
-        tag.id = tag.name = name;
+        tag.name = name;
         this.save();
+        return "success";
       }
     } else {
       return "notFound";
