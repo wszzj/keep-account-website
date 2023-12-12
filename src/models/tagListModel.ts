@@ -1,3 +1,4 @@
+import createId from "@/lib/createId";
 const localStorageName = "tagList";
 
 const tagListModel = {
@@ -17,11 +18,11 @@ const tagListModel = {
     if (names.indexOf(name) >= 0) {
       window.alert("标签名重复");
       return "duplicate";
-    } else {
-      this.data.push({ id: name, name });
-      this.save();
-      return name;
     }
+    const id = createId().toString();
+    this.data.push({ id, name });
+    this.save();
+    return name;
   },
   update(id: string, name: string) {
     const idList = this.data.map((item) => item.id);
