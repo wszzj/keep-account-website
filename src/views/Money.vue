@@ -14,14 +14,15 @@ import Tags from "@/components/money/Tags.vue";
 import Notes from "@/components/money/Notes.vue";
 import Types from "@/components/money/Types.vue";
 import NumberPad from "@/components/money/NumberPad.vue";
-import model from "@/model";
-const recordList = model.fetch();
-
+import recordListModel from "@/models/recordListModel";
+import tagListModel from "@/models/tagListModel";
+const recordList = recordListModel.fetch();
+const tagList = tagListModel.fetch();
 @Component({
   components: { Tags, Notes, Types, NumberPad },
 })
 export default class Money extends Vue {
-  tags = ["衣", "食", "住", "行", "喝酒"];
+  tags = tagList;
   record: RecordItem = { tag: "", notes: "", type: "-", amount: 0 };
   recordList: RecordItem[] = recordList;
   onUpdateNotes(value: string) {
@@ -34,13 +35,13 @@ export default class Money extends Vue {
     this.record.tag = value;
   }
   saveRecord() {
-    const record2: RecordItem = model.clone(this.record);
+    const record2: RecordItem = recordListModel.clone(this.record);
     record2.createdAt = new Date();
     this.recordList.push(record2);
   }
   @Watch("recordList")
   onRecordListChanged() {
-    model.save(this.recordList);
+    recordListModel.save(this.recordList);
   }
 }
 </script>
@@ -51,3 +52,4 @@ export default class Money extends Vue {
   flex-direction: column-reverse;
 }
 </style>
+@/models/model @/models/recordListModel

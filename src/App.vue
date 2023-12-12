@@ -11,6 +11,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.5;
-  color: #2c3e50;
+  color: #333;
 }
 </style>
