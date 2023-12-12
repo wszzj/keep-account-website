@@ -9,7 +9,7 @@
       <FormItem
         filedName="标签名"
         placeholder="在这里输入标签名"
-        :value="tag.name"
+        :value="currentTag.name"
         @update:value="update"
       />
     </div>
@@ -22,29 +22,29 @@
 <script lang="ts">
 import Vue from "vue";
 import FormItem from "@/components/money/FormItem.vue";
-import tagListModel from "@/models/tagListModel";
 import { Component } from "vue-property-decorator";
 @Component({
   components: { FormItem },
 })
 export default class EditLabel extends Vue {
-  tag: Tag = { id: "", name: "" };
+  get currentTag() {
+    return this.$store.state.currentTag;
+  }
   created() {
     const id = this.$route.params.id;
-    const tags = tagListModel.fetch();
-    const tag = tags.filter((t) => t.id === id)[0];
-    if (tag) {
-      this.tag = tag;
-    } else {
+    this.$store.commit("fetchTags");
+    this.$store.commit("fetchCurrentTag", id);
+    if (!this.currentTag) {
       this.$router.replace("/404");
     }
   }
   update(name: string) {
-    tagListModel.update(this.tag.id, name);
+    this.$store.commit("updateTags", { id: this.currentTag.id, name });
   }
   remove() {
-    tagListModel.remove(this.tag.id);
-    this.$router.back();
+    if (this.currentTag) {
+      this.$store.commit("removeTag", this.currentTag.id);
+    }
   }
 
   back() {

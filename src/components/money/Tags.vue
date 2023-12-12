@@ -18,11 +18,15 @@
 
 <script lang="ts">
 import Vue from "vue";
-import tagListModel from "@/models/tagListModel";
 import { Component } from "vue-property-decorator";
 @Component
 export default class Tags extends Vue {
-  tags = tagListModel.fetch();
+  get tags() {
+    return this.$store.state.tagList;
+  }
+  created() {
+    this.$store.commit("fetchTags");
+  }
   selectedTag = "";
   select(tag: string) {
     if (this.selectedTag !== tag) {
@@ -36,16 +40,7 @@ export default class Tags extends Vue {
   }
   createTag() {
     const name = window.prompt("请输入新的标签名");
-    if (name) {
-      const message = tagListModel.create(name);
-      if (message === "duplicate") {
-        window.alert("标签名重复");
-      } else if (message === "success") {
-        window.alert("创建成功");
-      }
-    } else if (name === "") {
-      window.alert("标签名不能为空");
-    }
+    this.$store.commit("createTags", name);
   }
 }
 </script>
