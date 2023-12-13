@@ -1,6 +1,6 @@
 <template>
-  <div class="total" :class="'classPrefix' && `${classPrefix}-wrapper`">
-    <div class="main" :class="'classPrefix' && `${classPrefix}-content`">
+  <div class="total" :class="{ [classPrefix + '-wrapper']: classPrefix }">
+    <div class="main" :class="{ [classPrefix + '-content']: classPrefix }">
       <slot></slot>
     </div>
     <Nav></Nav>
