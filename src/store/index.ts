@@ -5,17 +5,12 @@ import clone from "@/lib/clone";
 import createId from "@/lib/createId";
 Vue.use(Vuex);
 
-type rootState = {
-  recordList: RecordItem[];
-  tagList: Tag[];
-  currentTag: Tag | undefined;
-};
 const store = new Vuex.Store({
   state: {
     recordList: [] as RecordItem[],
     tagList: [] as Tag[],
     currentTag: undefined,
-  } as rootState,
+  } as RootState,
   mutations: {
     fetchCurrentTag(state, id: string) {
       state.currentTag = state.tagList.filter((t) => t.id === id)[0];
@@ -33,7 +28,7 @@ const store = new Vuex.Store({
     },
     createRecord(state, record: RecordItem) {
       const record2: RecordItem = clone(record);
-      record2.createdAt = new Date();
+      record2.createdAt = new Date().toISOString();
       state.recordList.push(record2);
       store.commit("saveRecord");
     },

@@ -6,6 +6,16 @@
       classPrefix="interval"
       :dateSource="intervalList"
     />
+    <ol>
+      <li v-for="(group, index) in result" :key="index">
+        {{ group.title }}
+        <ol>
+          <li v-for="(item, index) in group.items" :key="index">
+            {{ item.createdAt }} {{ item.amount }}
+          </li>
+        </ol>
+      </li>
+    </ol>
   </layout>
 </template>
 
@@ -23,6 +33,25 @@ export default class Statistics extends Vue {
   interval = "day";
   typeList = typeList;
   intervalList = intervalList;
+  get recordList() {
+    return (this.$store.state as RootState).recordList;
+  }
+  beforeCreate() {
+    this.$store.commit("fetchRecord");
+  }
+  get result() {
+    const { recordList } = this;
+    const hashTable: { [key: string]: { title: string; items: RecordItem[] } } =
+      {};
+    for (let i = 0; i < recordList.length; i++) {
+      const date = recordList[i].createdAt?.split("T")[0];
+      if (date) {
+        hashTable[date] = hashTable[date] || { title: date, items: [] };
+        hashTable[date].items.push(recordList[i]);
+      }
+    }
+    return hashTable;
+  }
 }
 </script>
 

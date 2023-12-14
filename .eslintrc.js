@@ -3,7 +3,7 @@ module.exports = {
   env: {
     node: true
   },
-  "globals": { "RecordItem": true, 'Tag': true },
+  "globals": { "RecordItem": true, 'Tag': true, 'RootState': true },
   'extends': [
     'plugin:vue/essential',
     'eslint:recommended',
