@@ -1,7 +1,7 @@
 <template>
   <Layout class-prefix="layout">
     <NumberPad :value.sync="record.amount" @submit="saveRecord" />
-    <Types :value.sync="record.type" />
+    <Tabs :dateSource="typeList" :value.sync="record.type" />
     <div class="notes">
       <FormItem
         :value="record.notes"
@@ -19,12 +19,14 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import Tags from "@/components/money/Tags.vue";
 import FormItem from "@/components/money/FormItem.vue";
-import Types from "@/components/money/Types.vue";
 import NumberPad from "@/components/money/NumberPad.vue";
+import Tabs from "@/components/Tabs.vue";
+import typeList from "@/constants/typeList";
 @Component({
-  components: { Tags, FormItem, Types, NumberPad },
+  components: { Tags, FormItem, NumberPad, Tabs },
 })
 export default class Money extends Vue {
+  typeList = typeList;
   get recordList() {
     return this.$store.state.recordList;
   }
@@ -56,3 +58,4 @@ export default class Money extends Vue {
   padding: 12px 0;
 }
 </style>
+@/constants/typeList
