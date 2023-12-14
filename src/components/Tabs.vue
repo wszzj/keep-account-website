@@ -1,6 +1,7 @@
 <template>
   <ul class="tabs">
     <li
+      class="tabs-item"
       v-for="(item, index) in dateSource"
       :key="index"
       :class="{
@@ -37,7 +38,7 @@ export default class Tabs extends Vue {
   display: flex;
   text-align: center;
   font-size: 24px;
-  > li {
+  &-item {
     width: 50%;
     height: 64px;
     display: flex;

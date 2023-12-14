@@ -6,8 +6,6 @@
       classPrefix="interval"
       :dateSource="intervalList"
     />
-    {{ type }}
-    {{ interval }}
   </layout>
 </template>
 
@@ -29,14 +27,18 @@ export default class Statistics extends Vue {
 </script>
 
 <style lang="scss" scoped>
-::v-deep .type-tab-item {
-  background-color: #fff;
-  &.selected {
-    background: #c4c4c4;
-    &::after {
-      display: none;
+::v-deep {
+  .type-tab-item {
+    background-color: #fff;
+    &.selected {
+      background: #c4c4c4;
+      &::after {
+        display: none;
+      }
     }
+  }
+  .interval-tab-item {
+    height: 48px;
   }
 }
 </style>
-@/constants/typeList
