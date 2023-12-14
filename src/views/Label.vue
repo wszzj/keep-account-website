@@ -23,6 +23,9 @@ import { Component } from "vue-property-decorator";
 
 @Component
 export default class Label extends Vue {
+  created() {
+    this.$store.commit("fetchTags");
+  }
   get tags() {
     return this.$store.state.tagList;
   }
