@@ -23,7 +23,17 @@
         </ol>
       </li>
     </ol>
-    <ol v-else-if="interval === 'month'">
+    <ol v-else-if="interval === 'month'" class="monthDateSource">
+      <label class="createAt">
+        <input type="month" v-model="now" />
+      </label>
+      <MyPieChart
+        v-if="monthHashTable.length !== 0"
+        :option.sync="monthOption"
+        class="chart"
+        :value.sync="now"
+      />
+
       <li v-for="(group, index) in monthHashTable" :key="index">
         <h3 class="title">
           {{ beautifyMonth(group.title) }}
@@ -40,7 +50,6 @@
         </ol>
       </li>
     </ol>
-
     <h3 v-if="dayHashTable.length === 0">暂无数据可以显示</h3>
   </layout>
 </template>
@@ -51,17 +60,59 @@ import { Component } from "vue-property-decorator";
 import Tabs from "@/components/Tabs.vue";
 import typeList from "@/constants/typeList";
 import intervalList from "@/constants/intervalList";
-
+import MyPieChart from "@/components/MyPieChart.vue";
 import dayjs from "dayjs";
 import clone from "@/lib/clone";
+type EChartsOption = echarts.EChartsOption;
 @Component({
-  components: { Tabs },
+  components: { Tabs, MyPieChart },
 })
 export default class Statistics extends Vue {
+  now = dayjs().format("YYYY-MM");
+  get monthOption() {
+    if (this.monthHashTable.length === 0) {
+      return {} as EChartsOption;
+    }
+    const newList = this.monthHashTable[0].items;
+
+    const result = [
+      { value: Number(newList[0].amount), name: newList[0].tag || "无" },
+    ];
+    for (let i = 1; i < newList.length; i++) {
+      const current = newList[i];
+      const last = result[result.length - 1];
+      if (last.name === current.tag) {
+        last.value += Number(current.amount);
+      } else {
+        result.push({ value: Number(current.amount), name: current.tag });
+      }
+    }
+    return {
+      tooltip: {
+        trigger: "item",
+        textStyle: {
+          fontSize: 16,
+        },
+      },
+      series: [
+        {
+          name: "Access From",
+          type: "pie",
+          radius: ["25%", "50%"],
+          label: {
+            show: true,
+            formatter: "{b}:{c}",
+          },
+          data: result,
+        },
+      ],
+    };
+  }
   type = "-";
   interval = "day";
   typeList = typeList;
   intervalList = intervalList;
+
   get recordList() {
     return (this.$store.state as RootState).recordList;
   }
@@ -71,7 +122,7 @@ export default class Statistics extends Vue {
   get dayHashTable() {
     const { recordList } = this;
     type Result = [{ title: string; total?: number; items: RecordItem[] }];
-    const list = recordList.filter((i) => i.type === this.type);
+    const list = clone(recordList).filter((i) => i.type === this.type);
     if (recordList.length === 0 || list.length === 0) {
       return [];
     }
@@ -107,7 +158,7 @@ export default class Statistics extends Vue {
   get monthHashTable() {
     const { recordList } = this;
     type Result = [{ title: string; total?: number; items: RecordItem[] }];
-    const list = recordList.filter((i) => i.type === this.type);
+    const list = clone(recordList).filter((i) => i.type === this.type);
     if (recordList.length === 0 || list.length === 0) {
       return [];
     }
@@ -116,7 +167,7 @@ export default class Statistics extends Vue {
     });
     const result: Result = [
       {
-        title: dayjs(newList[0].createdAt).format("YYYY-MM-DD"),
+        title: dayjs(newList[0].createdAt).format("YYYY-MM"),
         items: [newList[0]],
       },
     ];
@@ -127,7 +178,7 @@ export default class Statistics extends Vue {
         last.items.push(current);
       } else {
         result.push({
-          title: dayjs(current.createdAt).format("YYYY-MM-DD"),
+          title: dayjs(current.createdAt).format("YYYY-MM"),
           items: [current],
         });
       }
@@ -137,7 +188,8 @@ export default class Statistics extends Vue {
         }, 0);
       });
     }
-    return result;
+    const newResult = result.filter((i) => i.title === this.now);
+    return newResult;
   }
   tagString(tag: string) {
     return tag === "" ? "无" : tag;
@@ -207,5 +259,19 @@ export default class Statistics extends Vue {
 }
 .amount {
   padding-left: 12px;
+}
+
+.monthDateSource {
+  display: flex;
+  flex-direction: column;
+  > .createAt {
+    right: 20px;
+    > input {
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 10px;
+    }
+  }
 }
 </style>

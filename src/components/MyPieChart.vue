@@ -1,61 +1,36 @@
 <template>
-  <div ref="container"></div>
+  <div class="wrapper">
+    <div ref="container" class="chart"></div>
+  </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import * as echarts from "echarts";
-import { Component } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
+type EChartsOption = echarts.EChartsOption;
+
 @Component
 export default class MyPieChart extends Vue {
-  getChart() {
-    const div = this.$refs.container as HTMLElement;
-    const width = document.documentElement.clientWidth;
-    div.style.width = `${width - 32}px`;
-    div.style.height = `${width - 32}px`;
-    let myChart = echarts.init(div);
-    let option = {
-      title: {
-        text: "Referer of a Website",
-        subtext: "Fake Data",
-        left: "center",
-      },
-      tooltip: {
-        trigger: "item",
-      },
-      legend: {
-        orient: "vertical",
-        left: "left",
-      },
-      series: [
-        {
-          name: "Access From",
-          type: "pie",
-          radius: "50%",
-          data: [
-            { value: 1048, name: "Search Engine" },
-            { value: 735, name: "Direct" },
-            { value: 580, name: "Email" },
-            { value: 484, name: "Union Ads" },
-            { value: 300, name: "Video Ads" },
-          ],
-          emphasis: {
-            itemStyle: {
-              shadowBlur: 10,
-              shadowOffsetX: 0,
-              shadowColor: "rgba(0, 0, 0, 0.5)",
-            },
-          },
-        },
-      ],
-    };
-    option && myChart.setOption(option);
-  }
-
+  @Prop(Object) option!: EChartsOption;
+  chart?: echarts.ECharts;
   mounted() {
-    this.getChart();
+    this.chart = echarts.init(this.$refs.container as HTMLDivElement);
+    if (this.option) {
+      this.chart.setOption(this.option);
+    }
+  }
+  @Watch("option")
+  onOptionChanged(newOption: EChartsOption) {
+    this.chart?.setOption(newOption);
   }
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.chart {
+  min-width: 100%;
+  min-height: 100vw;
+  background: #fff;
+}
+</style>

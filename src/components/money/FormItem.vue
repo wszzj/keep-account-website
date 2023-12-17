@@ -6,7 +6,7 @@
         <input
           :type="type || 'text'"
           :placeholder="placeholder"
-          :value="x(value)"
+          :value="transform(value)"
           @input="onValueChanged"
         />
       </template>
@@ -36,7 +36,7 @@ export default class Notes extends Vue {
     const input = event.target as HTMLInputElement;
     this.$emit("update:value", input.value);
   }
-  x(string: string) {
+  transform(string: string) {
     return dayjs(string).format("YYYY-MM-DD");
   }
 }
