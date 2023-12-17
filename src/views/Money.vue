@@ -2,10 +2,12 @@
   <Layout class-prefix="layout">
     <NumberPad :value.sync="record.amount" @submit="saveRecord" />
     <Tabs :dateSource="typeList" :value.sync="record.type" />
+    <div class="createAt">
+      <FormItem type="date" :value.sync="record.createdAt" filedName="日期" />
+    </div>
     <div class="notes">
       <FormItem
-        :value="record.notes"
-        @update:value="onUpdateNotes"
+        :value.sync="record.notes"
         filedName="备注"
         placeholder="在这里输入备注"
       />
@@ -33,18 +35,26 @@ export default class Money extends Vue {
   created() {
     this.$store.commit("fetchRecord");
   }
-  record: RecordItem = { tag: "", notes: "", type: "-", amount: "0" };
-
-  onUpdateNotes(value: string) {
-    this.record.notes = value;
-  }
+  record: RecordItem = {
+    tag: "",
+    notes: "",
+    type: "-",
+    amount: "0",
+    createdAt: new Date().toISOString(),
+  };
 
   onUpdateTag(value: string) {
     this.record.tag = value;
   }
   saveRecord() {
     this.$store.commit("createRecord", this.record);
-    this.record = { tag: "", notes: "", type: "-", amount: "0" };
+    this.record = {
+      tag: "",
+      notes: "",
+      type: "-",
+      amount: "0",
+      createdAt: new Date().toISOString(),
+    };
   }
 }
 </script>
@@ -58,5 +68,8 @@ export default class Money extends Vue {
 <style lang="scss" scoped>
 .notes {
   padding: 12px 0;
+}
+.createAt {
+  background-color: #e8e8e8;
 }
 </style>
