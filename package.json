@@ -1,6 +1,6 @@
 {
-  "name": "money",
-  "version": "0.1.0",
+  "name": "keep-account",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "serve": "SET NODE_OPTIONS=--openssl-legacy-provider &&vue-cli-service serve",
