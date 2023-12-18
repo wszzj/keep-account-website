@@ -15,7 +15,7 @@
         </h3>
         <ol>
           <li v-for="(item, index) in group.items" :key="index" class="record">
-            <span>{{ tagString(item.tag) }}</span>
+            <span>{{ item.tag }}</span>
             <span class="notes">{{ item.notes }}</span>
             <span class="amount"
               >￥{{ parseFloat(item.amount).toFixed(2) }}</span
@@ -49,7 +49,7 @@
         </h3>
         <ol>
           <li v-for="(item, index) in group.items" :key="index" class="record">
-            <span>{{ tagString(item.tag) }}</span>
+            <span>{{ item.tag }}</span>
             <span class="notes">{{ item.notes }}</span>
             <span class="amount"
               >￥{{ parseFloat(item.amount).toFixed(2) }}</span
@@ -76,30 +76,39 @@ type EChartsOption = echarts.EChartsOption;
 })
 export default class Statistics extends Vue {
   now = dayjs().format("YYYY-MM");
-  get monthAmountOption() {
-    if (this.monthHashTable.length === 0) {
-      return {} as EChartsOption;
-    }
-    const newList = this.monthHashTable[0].items;
+  get pieValue() {
+    const newList = clone(this.monthHashTable[0].items);
+
     type Result = [{ title: string; total: number }];
     const result: Result = [
       {
         title: dayjs(newList[0].createdAt).format("YYYY-MM-DD"),
-        total: Number(newList[0].amount),
+        total: parseFloat(newList[0].amount),
       },
     ];
+
     for (let i = 1; i < newList.length; i++) {
       const current = newList[i];
       const last = result[result.length - 1];
       if (last.title === dayjs(current.createdAt).format("YYYY-MM-DD")) {
-        last.total += Number(current.amount);
+        last.total = parseFloat(
+          (last.total + Number(current.amount)).toFixed(2)
+        );
       } else {
         result.push({
           title: dayjs(current.createdAt).format("YYYY-MM-DD"),
-          total: Number(current.amount),
+          total: parseFloat(Number(current.amount).toFixed(2)),
         });
       }
     }
+
+    return result;
+  }
+  get monthAmountOption() {
+    if (this.monthHashTable.length === 0) {
+      return {} as EChartsOption;
+    }
+    const { pieValue } = this;
     const array = [];
     const amounts = [];
     const dayCount = dayjs(this.now).daysInMonth();
@@ -107,13 +116,12 @@ export default class Statistics extends Vue {
       array.push(
         dayjs(this.now).startOf("month").add(i, "day").format("YYYY-MM-DD")
       );
-
-      for (let j = 0; j < result.length; j++) {
-        if (array[i] === result[j].title) {
-          amounts.push(result[j].total);
+      amounts.push(0);
+      for (let j = 0; j < pieValue.length; j++) {
+        if (array[i] === pieValue[j].title) {
+          amounts.splice(i, 1, pieValue[j].total);
         }
       }
-      amounts.push(0);
     }
     return {
       tooltip: {
@@ -152,24 +160,30 @@ export default class Statistics extends Vue {
       ],
     };
   }
+
   get monthTagOption() {
     if (this.monthHashTable.length === 0) {
       return {} as EChartsOption;
     }
-    const newList = this.monthHashTable[0].items;
-
-    const result = [
-      { value: Number(newList[0].amount), name: newList[0].tag || "无" },
-    ];
-    for (let i = 1; i < newList.length; i++) {
-      const current = newList[i];
-      const last = result[result.length - 1];
-      if (last.name === current.tag) {
-        last.value += Number(current.amount);
-      } else {
-        result.push({ value: Number(current.amount), name: current.tag });
+    const newList = clone(this.monthHashTable[0].items);
+    const list = Array.from(new Set(newList.map((i) => i.tag)));
+    console.log(list);
+    type Result = [{ value: number; name: string }];
+    const result = [];
+    for (let i = 0; i < list.length; i++) {
+      result.push({ value: 0, name: list[i] });
+      for (let j = 0; j < newList.length; j++) {
+        if (result[i].name === newList[j].tag) {
+          result[i].value = parseFloat(
+            (result[i].value + parseFloat(newList[j].amount)).toFixed(2)
+          );
+        }
       }
     }
+    console.log("new");
+    console.log(newList);
+    console.log("result");
+    console.log(result);
     return {
       tooltip: {
         trigger: "item",
@@ -272,9 +286,6 @@ export default class Statistics extends Vue {
     }
     const newResult = result.filter((i) => i.title === this.now);
     return newResult;
-  }
-  tagString(tag: string) {
-    return tag === "" ? "无" : tag;
   }
 
   beautifyDay(string: string) {

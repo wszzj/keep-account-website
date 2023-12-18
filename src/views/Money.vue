@@ -24,6 +24,7 @@ import FormItem from "@/components/money/FormItem.vue";
 import NumberPad from "@/components/money/NumberPad.vue";
 import Tabs from "@/components/Tabs.vue";
 import typeList from "@/constants/typeList";
+import dayjs from "dayjs";
 @Component({
   components: { Tags, FormItem, NumberPad, Tabs },
 })
@@ -41,7 +42,7 @@ export default class Money extends Vue {
     notes: "",
     type: "-",
     amount: "0",
-    createdAt: new Date().toISOString(),
+    createdAt: dayjs().format("YYYY-MM-DD"),
   };
 
   onUpdateTag(value: string) {
@@ -58,7 +59,7 @@ export default class Money extends Vue {
       notes: "",
       type: "-",
       amount: "0",
-      createdAt: new Date().toISOString(),
+      createdAt: dayjs().format("YYYY-MM-DD"),
     };
   }
 }
