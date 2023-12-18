@@ -29,7 +29,13 @@
       </label>
       <MyChart
         v-if="monthHashTable.length !== 0"
-        :option.sync="monthOption"
+        :option.sync="monthTagOption"
+        class="chart"
+        :value.sync="now"
+      />
+      <MyChart
+        v-if="monthHashTable.length !== 0"
+        :option.sync="monthAmountOption"
         class="chart"
         :value.sync="now"
       />
@@ -70,7 +76,83 @@ type EChartsOption = echarts.EChartsOption;
 })
 export default class Statistics extends Vue {
   now = dayjs().format("YYYY-MM");
-  get monthOption() {
+  get monthAmountOption() {
+    if (this.monthHashTable.length === 0) {
+      return {} as EChartsOption;
+    }
+    const newList = this.monthHashTable[0].items;
+    type Result = [{ title: string; total: number }];
+    const result: Result = [
+      {
+        title: dayjs(newList[0].createdAt).format("YYYY-MM-DD"),
+        total: Number(newList[0].amount),
+      },
+    ];
+    for (let i = 1; i < newList.length; i++) {
+      const current = newList[i];
+      const last = result[result.length - 1];
+      if (last.title === dayjs(current.createdAt).format("YYYY-MM-DD")) {
+        last.total += Number(current.amount);
+      } else {
+        result.push({
+          title: dayjs(current.createdAt).format("YYYY-MM-DD"),
+          total: Number(current.amount),
+        });
+      }
+    }
+    const array = [];
+    const amounts = [];
+    const dayCount = dayjs(this.now).daysInMonth();
+    for (let i = 0; i < dayCount; i++) {
+      array.push(
+        dayjs(this.now).startOf("month").add(i, "day").format("YYYY-MM-DD")
+      );
+
+      for (let j = 0; j < result.length; j++) {
+        if (array[i] === result[j].title) {
+          amounts.push(result[j].total);
+        }
+      }
+      amounts.push(0);
+    }
+    return {
+      tooltip: {
+        trigger: "axis",
+        // formatter: "{b}<br></br>{c}",
+        axisPointer: {
+          type: "shadow",
+        },
+      },
+      grid: {
+        left: "3%",
+        right: "4%",
+        bottom: "3%",
+        containLabel: true,
+      },
+      xAxis: [
+        {
+          type: "category",
+          data: array,
+          axisTick: {
+            alignWithLabel: true,
+          },
+        },
+      ],
+      yAxis: [
+        {
+          type: "value",
+        },
+      ],
+      series: [
+        {
+          type: "bar",
+          barWidth: "60%",
+          data: amounts,
+        },
+      ],
+    };
+  }
+  get monthTagOption() {
     if (this.monthHashTable.length === 0) {
       return {} as EChartsOption;
     }
