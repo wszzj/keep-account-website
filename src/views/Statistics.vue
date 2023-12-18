@@ -167,7 +167,6 @@ export default class Statistics extends Vue {
     }
     const newList = clone(this.monthHashTable[0].items);
     const list = Array.from(new Set(newList.map((i) => i.tag)));
-    console.log(list);
     type Result = [{ value: number; name: string }];
     const result = [];
     for (let i = 0; i < list.length; i++) {
@@ -180,10 +179,7 @@ export default class Statistics extends Vue {
         }
       }
     }
-    console.log("new");
-    console.log(newList);
-    console.log("result");
-    console.log(result);
+
     return {
       tooltip: {
         trigger: "item",

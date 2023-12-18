@@ -30,7 +30,7 @@ export default class MyChart extends Vue {
 <style lang="scss" scoped>
 .chart {
   min-width: 100%;
-  min-height: 100vw;
+  min-height: 400px;
   background: #fff;
 }
 </style>
