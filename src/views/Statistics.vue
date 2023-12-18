@@ -7,6 +7,7 @@
       :dateSource="intervalList"
     />
     <ol v-if="interval === 'day'">
+      <h3 v-if="dayHashTable.length === 0">暂无数据可以显示</h3>
       <li v-for="(group, index) in dayHashTable" :key="index">
         <h3 class="title">
           {{ beautifyDay(group.title) }}
@@ -57,7 +58,6 @@
         </ol>
       </li>
     </ol>
-    <h3 v-if="dayHashTable.length === 0">暂无数据可以显示</h3>
   </layout>
 </template>
 
@@ -118,7 +118,7 @@ export default class Statistics extends Vue {
     return {
       tooltip: {
         trigger: "axis",
-        // formatter: "{b}<br></br>{c}",
+
         axisPointer: {
           type: "shadow",
         },

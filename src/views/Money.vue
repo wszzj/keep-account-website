@@ -32,6 +32,7 @@ export default class Money extends Vue {
   get recordList() {
     return this.$store.state.recordList;
   }
+
   created() {
     this.$store.commit("fetchRecord");
   }
@@ -47,9 +48,13 @@ export default class Money extends Vue {
     this.record.tag = value;
   }
   saveRecord() {
+    if (!this.record.tag || this.record.tag === "") {
+      window.alert("请选择一个标签");
+      return;
+    }
     this.$store.commit("createRecord", this.record);
     this.record = {
-      tag: "",
+      tag: this.record.tag,
       notes: "",
       type: "-",
       amount: "0",
