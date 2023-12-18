@@ -27,12 +27,13 @@
       <label class="createAt">
         <input type="month" v-model="now" />
       </label>
-      <MyPieChart
+      <MyChart
         v-if="monthHashTable.length !== 0"
         :option.sync="monthOption"
         class="chart"
         :value.sync="now"
       />
+      <div v-else class="content">此月无数据</div>
 
       <li v-for="(group, index) in monthHashTable" :key="index">
         <h3 class="title">
@@ -60,12 +61,12 @@ import { Component } from "vue-property-decorator";
 import Tabs from "@/components/Tabs.vue";
 import typeList from "@/constants/typeList";
 import intervalList from "@/constants/intervalList";
-import MyPieChart from "@/components/MyPieChart.vue";
+import MyChart from "@/components/MyChart.vue";
 import dayjs from "dayjs";
 import clone from "@/lib/clone";
 type EChartsOption = echarts.EChartsOption;
 @Component({
-  components: { Tabs, MyPieChart },
+  components: { Tabs, MyChart },
 })
 export default class Statistics extends Vue {
   now = dayjs().format("YYYY-MM");
@@ -96,7 +97,6 @@ export default class Statistics extends Vue {
       },
       series: [
         {
-          name: "Access From",
           type: "pie",
           radius: ["25%", "50%"],
           label: {
@@ -266,12 +266,17 @@ export default class Statistics extends Vue {
   flex-direction: column;
   > .createAt {
     right: 20px;
+    text-align: center;
     > input {
       border: none;
       outline: none;
       background: transparent;
       padding: 10px;
     }
+  }
+  > .content {
+    padding: 10px;
+    text-align: center;
   }
 }
 </style>

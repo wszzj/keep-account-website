@@ -11,7 +11,7 @@ import { Component, Prop, Watch } from "vue-property-decorator";
 type EChartsOption = echarts.EChartsOption;
 
 @Component
-export default class MyPieChart extends Vue {
+export default class MyChart extends Vue {
   @Prop(Object) option!: EChartsOption;
   chart?: echarts.ECharts;
   mounted() {
