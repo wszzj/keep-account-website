@@ -1,29 +1,15 @@
-# money
+# 蜗牛记账
 
-## Project setup
-```
-npm install
-```
+## 技术栈
+* Vue2
+* Vue-cil
+* Vuex
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## 项目介绍
+1. 此项目来源网上的开源项目
+2. 项目分记账，标签修改，统计三大类
+3. 图表使用Echarts实现
+4. 优先推荐手机预览
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your unit tests
-```
-npm run test:unit
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## 预览
+地址：[预览地址](https://wszzj.github.io/keep-account-website/#/money)
